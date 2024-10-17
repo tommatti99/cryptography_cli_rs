@@ -14,7 +14,7 @@ fn main() {
         Algorithms::CesarCipher(CesarCipherAlg {operation, shift, phrase}) => {
             let cesar_cipher_instance = CesarCipherAlg {operation, shift, phrase};
 
-            cesar_cipher_instance.encode();
+            cesar_cipher_instance.execute();
         }
     }
 }
