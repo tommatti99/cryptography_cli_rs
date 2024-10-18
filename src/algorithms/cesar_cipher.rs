@@ -10,9 +10,9 @@ pub struct CesarCipherAlg {
     /// Shift number
     #[arg(short, long)]
     pub shift: i8,
-    /// The phrase to encode or decode
+    /// The message to encode or decode
     #[arg(short, long)]
-    pub phrase: String
+    pub message: String
 }
 
 
@@ -29,19 +29,19 @@ impl CesarCipherAlg {
     }
     
     fn encode_decode(self) -> () {
-        let mut encoded_phrase: String = String::new();
+        let mut encoded_message: String = String::new();
 
-        for c in self.phrase.chars() {
+        for c in self.message.chars() {
             match ALPHABET.get(self.clone().shift_pos(c)) {
                 Some(new_letter) => {
-                    encoded_phrase  = format!("{}{}", encoded_phrase, new_letter);
+                    encoded_message  = format!("{}{}", encoded_message, new_letter);
                 },
                 None => {
-                    encoded_phrase  = format!("{}{}", encoded_phrase, " ");
+                    encoded_message  = format!("{}{}", encoded_message, " ");
                 }
             }
         }
-        println!("{}", encoded_phrase);
+        println!("{}", encoded_message);
     }
 
     fn shift_pos(self, c: char) -> usize {

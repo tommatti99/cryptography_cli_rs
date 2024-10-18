@@ -4,7 +4,7 @@ The supported algoritms until now are:
 
 Simetric Cryptography
 - [X] Cesar Cipher 
-- [ ] Vigenère Cipher
+- [X] Vigenère Cipher
 - [ ] Xor Cipher
 - [ ] Transposition Cipher
 - [ ] Advanced Encryption Standard

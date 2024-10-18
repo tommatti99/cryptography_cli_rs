@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use crate::algorithms::{cesar_cipher::CesarCipherAlg, vigenere_cipher::VigenereCipherAlg};
+use crate::algorithms::{cesar_cipher::CesarCipherAlg, vigenere_cipher::VigenereCipherAlg, xor_cipher::XorCipherAlg};
 
 
 #[derive(Debug, Parser)]
@@ -15,5 +15,8 @@ pub enum Algorithms {
     /// Operation using Cesar Cipher
     CesarCipher(CesarCipherAlg),
     /// Operation using Vigenere Cipher
-    VigenereCipher(VigenereCipherAlg)
+    VigenereCipher(VigenereCipherAlg),
+    /// Operation using Xor Cipher
+    XorCipher(XorCipherAlg)
+
 }

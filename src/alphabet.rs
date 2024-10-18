@@ -12,6 +12,16 @@ pub fn get_text_values(text: String) -> Vec<usize> {
             .collect();
 }
 
+pub fn get_letter_bin_value(letter: &str) -> Vec<u8> {
+    return letter.to_ascii_uppercase().to_string().as_bytes().to_vec();
+}
+
+pub fn get_text_bin_value(text: String) -> Vec<Vec<u8>> {
+    return 
+        text.chars()
+            .map(|x:char| x.to_string().as_bytes().to_vec())
+            .collect();
+}
 
 
 #[cfg(test)]
@@ -32,7 +42,7 @@ mod alphabet_test {
             VigenereCipherAlg {
                 operation: crate::Operations::Encode,
                 key: "banana".to_string(),
-                phrase: "aaaaaa".to_string(),
+                message: "aaaaaa".to_string(),
             };
         assert_eq!(get_text_values(test_instance_1.key), vec![1, 0, 13, 0, 13, 0]);
     }
