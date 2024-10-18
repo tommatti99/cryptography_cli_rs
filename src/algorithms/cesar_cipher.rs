@@ -1,7 +1,6 @@
-use clap::{Args, ValueEnum};
+use clap::Args;
+use crate::{alphabet::{ALPHABET, ALPHABET_LEN, get_letter_position}, Operations};
 
-const ALPHABET: [&str; 26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
-const ALPHABET_LEN: i8 = 26;
 
 #[derive(Debug, Args, Clone)]
 pub struct CesarCipherAlg {
@@ -16,11 +15,6 @@ pub struct CesarCipherAlg {
     pub phrase: String
 }
 
-#[derive(Debug, Clone, ValueEnum)]
-pub enum Operations {
-    Encode,
-    Decode
-}
 
 impl CesarCipherAlg {
     pub fn execute(self) -> () {
@@ -65,6 +59,3 @@ impl CesarCipherAlg {
 }
 
 
-fn get_letter_position(letter: &str) -> usize {
-    return ALPHABET.iter().position(|x: &&str| *x == letter.to_uppercase()).unwrap().try_into().unwrap();
-}

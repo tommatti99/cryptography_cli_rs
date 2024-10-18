@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use crate::algorithms::cesar_cipher::CesarCipherAlg;
+use crate::algorithms::{cesar_cipher::CesarCipherAlg, vigenere_cipher::VigenereCipherAlg};
 
 
 #[derive(Debug, Parser)]
@@ -13,5 +13,7 @@ pub struct CriptographyCliArgs {
 #[derive(Debug, Clone, Subcommand)]
 pub enum Algorithms {
     /// Operation using Cesar Cipher
-    CesarCipher(CesarCipherAlg)
+    CesarCipher(CesarCipherAlg),
+    /// Operation using Vigenere Cipher
+    VigenereCipher(VigenereCipherAlg)
 }
