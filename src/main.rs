@@ -1,5 +1,6 @@
 pub mod args;
 pub mod alphabet;
+pub mod ops;
 pub mod algorithms {
     pub mod advanced_encryption_standard;
     pub mod cesar_cipher;
@@ -15,8 +16,8 @@ use clap::{Parser, ValueEnum};
 
 #[derive(Debug, Clone, ValueEnum, PartialEq)]
 pub enum Operations {
-    Encode,
-    Decode
+    Encrypt,
+    Decrypt
 }
 
 fn main() {
@@ -43,8 +44,8 @@ fn main() {
             transposition_cipher_instance.execute();
         }
         
-        Algorithms::DataEncryptionStandard(DataEncryptionStandardAlg {}) => {
-            let data_encryption_standard_instance = DataEncryptionStandardAlg {};
+        Algorithms::DataEncryptionStandard(DataEncryptionStandardAlg {operation, key, message}) => {
+            let data_encryption_standard_instance = DataEncryptionStandardAlg {operation, key, message};
             data_encryption_standard_instance.execute();
         }
 

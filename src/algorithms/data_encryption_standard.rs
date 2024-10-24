@@ -1,4 +1,5 @@
 use clap::Args;
+use crate::Operations;
 
 pub const IP_TABLE: [[i8; 8]; 8] = [
                                     [58, 50, 42, 34, 26, 18, 10, 2], 
@@ -127,9 +128,50 @@ pub const S_BOX_8_TABLE: [[i8; 16]; 4] = [
 
 
 #[derive(Debug, Args, Clone)]
-pub struct DataEncryptionStandardAlg {}
-impl DataEncryptionStandardAlg {
-    pub fn execute(self) -> () {
-        
-    }
+pub struct DataEncryptionStandardAlg {
+    /// Encode or Decode Operation
+    #[arg(short, long)]
+    pub operation: Operations,
+    /// The secret word for encrypt
+    #[arg(short, long)]
+    pub key: String,
+    /// The message to encode or decode
+    #[arg(short, long)]
+    pub message: String
 }
+impl DataEncryptionStandardAlg {
+    
+    pub fn execute(self) -> () {
+        /* 
+        match self.operation {
+            Operations::Encrypt => {
+                self.encrypt();
+            }
+            Operations::Decrypt => {
+                self.decrypt();
+            }
+        }
+        */
+    }
+    /*
+    fn encrypt(self) {
+        let blocks = separe_msg_into_64b_blocks(self.message);
+
+    }
+    fn decrypt(self) {}
+
+
+    fn initial_permutation(self) -> Vec<Vec<u8>> {}
+    
+    fn key_dependent_computation() -> Vec<Vec<u8>> {}
+
+    fn cipher_function_des() -> {}
+
+    fn key_schedule(self) -> {}
+    
+    fn final_permutation() -> Vec<Vec<u8>> {}
+*/
+}
+
+
+

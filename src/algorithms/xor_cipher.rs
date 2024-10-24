@@ -43,10 +43,10 @@ impl XorCipherAlg {
         };
 
         match new_key_instance.operation {
-            Operations::Encode => {
+            Operations::Encrypt => {
                 new_key_instance.encode_decode();
             }
-            Operations::Decode => {
+            Operations::Decrypt => {
                 new_key_instance.encode_decode();
             }
         }
@@ -102,14 +102,14 @@ mod xor_cipher_test {
     fn xor_cipher_encode_test() -> () {
         let instance_1: XorCipherAlg = 
             XorCipherAlg {
-                operation: Operations::Decode ,
+                operation: Operations::Decrypt ,
                 key: Some("AAAAAAAAAAAA".to_string()),
                 message: "- 3.8$".to_string()
             };
 
             let instance_2: XorCipherAlg = 
             XorCipherAlg {
-                operation: Operations::Encode ,
+                operation: Operations::Encrypt ,
                 key: Some("AAAAAAAAAAAA".to_string()),
                 message: "laroye".to_string()
             };

@@ -1,4 +1,6 @@
-Its an CLI i'm working in to learn about cryptography.
+Its an CLI i'm working in to learn about cryptography. 
+
+I implemented the algorithms by hand... NO LIBS
 
 The supported algoritms until now are:
 

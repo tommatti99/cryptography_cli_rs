@@ -17,10 +17,10 @@ pub struct VigenereCipherAlg {
 impl VigenereCipherAlg {
     pub fn execute(self) -> () {
         match self.operation {
-            Operations::Decode => {
+            Operations::Decrypt => {
                 self.decode();
             },
-            Operations::Encode => {
+            Operations::Encrypt => {
                 self.encode();
             }
         }
@@ -85,7 +85,7 @@ mod vigenere_cipher_test {
     pub fn extend_key_test() -> () {
         let test_instance_1: VigenereCipherAlg = 
             VigenereCipherAlg {
-                operation: crate::Operations::Encode,
+                operation: crate::Operations::Encrypt,
                 key: "banana".to_string(),
                 message: "aaabbbcccdddeee".to_string(),
             };
@@ -99,7 +99,7 @@ mod vigenere_cipher_test {
     pub fn encode_test() -> () {
         let test_instance_1: VigenereCipherAlg = 
             VigenereCipherAlg {
-                operation: crate::Operations::Encode,
+                operation: crate::Operations::Encrypt,
                 key: "banana".to_string(),
                 message: "aaabbbcccdddeee".to_string(),
             };
@@ -110,7 +110,7 @@ mod vigenere_cipher_test {
     pub fn decode_test() -> () {
         let test_instance_1: VigenereCipherAlg = 
             VigenereCipherAlg {
-                operation: crate::Operations::Encode,
+                operation: crate::Operations::Encrypt,
                 key: "banana".to_string(),
                 message: "BANBOBDCPDQDFER".to_string(),
             };

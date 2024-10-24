@@ -19,10 +19,10 @@ pub struct CesarCipherAlg {
 impl CesarCipherAlg {
     pub fn execute(self) -> () {
         match self.operation {
-            Operations::Encode => {
+            Operations::Encrypt => {
                 self.encode_decode();
             } 
-            Operations::Decode => {
+            Operations::Decrypt => {
                 self.encode_decode();
             } 
         }

@@ -24,6 +24,8 @@ pub fn get_text_bin_value(text: String) -> Vec<Vec<u8>> {
 }
 
 
+
+
 #[cfg(test)]
 mod alphabet_test {
     use crate::algorithms::vigenere_cipher::VigenereCipherAlg;
@@ -40,7 +42,7 @@ mod alphabet_test {
     pub fn get_text_values_test() -> () {
         let test_instance_1: VigenereCipherAlg = 
             VigenereCipherAlg {
-                operation: crate::Operations::Encode,
+                operation: crate::Operations::Encrypt,
                 key: "banana".to_string(),
                 message: "aaaaaa".to_string(),
             };
