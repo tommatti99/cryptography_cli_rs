@@ -1,7 +1,7 @@
 use clap::Args;
-use crate::Operations;
+use crate::{ops::{bits_into_string, make_64bits_blocks, string_into_bits}, Operations};
 
-pub const IP_TABLE: [[i8; 8]; 8] = [
+pub const INITIAL_PERMUTATION_TABLE: [[u8; 8]; 8] = [
                                     [58, 50, 42, 34, 26, 18, 10, 2], 
                                     [60, 52, 44, 36, 28, 20, 12, 4],
                                     [62, 54, 46, 38, 30, 22, 14, 6],
@@ -12,7 +12,7 @@ pub const IP_TABLE: [[i8; 8]; 8] = [
                                     [63, 55, 47, 39, 31, 23, 15, 7]
                                 ];
 
-pub const FP_TABLE: [[i8; 8]; 8] = [
+pub const FINAL_PERMUTATION_TABLE: [[u8; 8]; 8] = [
                                     [40, 08, 48, 16, 56, 24, 64, 32], 
                                     [39, 07, 47, 15, 55, 23, 63, 31],
                                     [38, 06, 46, 14, 54, 22, 62, 30],
@@ -23,7 +23,7 @@ pub const FP_TABLE: [[i8; 8]; 8] = [
                                     [33, 01, 41, 09, 49, 17, 57, 25]
                                 ];
 
-pub const PC1_TABLE: [[i8; 7]; 8] = [
+pub const PC1: [[i8; 7]; 8] = [
                                     [57, 49, 41, 33, 25, 17, 09], 
                                     [01, 58, 50, 42, 34, 26, 18],
                                     [10, 02, 59, 51, 43, 35, 27],
@@ -34,7 +34,7 @@ pub const PC1_TABLE: [[i8; 7]; 8] = [
                                     [21, 13, 05, 28, 20, 12, 04]
                                 ];                                
 
-pub const PC2_TABLE: [[i8; 6]; 8] = [
+pub const PC2: [[i8; 6]; 8] = [
                                     [14, 17, 11, 24, 01, 05], 
                                     [03, 28, 15, 06, 21, 10],
                                     [23, 19, 12, 04, 26, 08],
@@ -45,7 +45,7 @@ pub const PC2_TABLE: [[i8; 6]; 8] = [
                                     [46, 42, 50, 36, 29, 32]
                                 ];    
 
-pub const EXPANSION_TABLE: [[i8; 6]; 8] = [
+pub const EXPANSION: [[i8; 6]; 8] = [
                                     [32, 01, 02, 03, 04, 05], 
                                     [04, 05, 06, 07, 08, 09],
                                     [08, 09, 10, 11, 12, 13],
@@ -142,7 +142,7 @@ pub struct DataEncryptionStandardAlg {
 impl DataEncryptionStandardAlg {
     
     pub fn execute(self) -> () {
-        /* 
+        
         match self.operation {
             Operations::Encrypt => {
                 self.encrypt();
@@ -151,18 +151,27 @@ impl DataEncryptionStandardAlg {
                 self.decrypt();
             }
         }
-        */
+        
     }
-    /*
     fn encrypt(self) {
-        let blocks = separe_msg_into_64b_blocks(self.message);
+        let blocks: Vec<[[u8; 8]; 8]> = make_64bits_blocks(string_into_bits(self.message));
+        
+        let permuted_blocks: Vec<[[u8; 8]; 8]> = blocks.iter().map(|block: &[[u8; 8]; 8]| initial_permutation(block.clone())).collect();
 
-    }
+
+
+
+        let unpermuted_blocks: Vec<[[u8; 8]; 8]> = permuted_blocks.iter().map(|block: &[[u8; 8]; 8]| final_permutation(block.clone())).collect();
+
+        println!("{}", bits_into_string(unpermuted_blocks.concat().concat()));
+        }
+    
     fn decrypt(self) {}
 
 
-    fn initial_permutation(self) -> Vec<Vec<u8>> {}
+
     
+/* 
     fn key_dependent_computation() -> Vec<Vec<u8>> {}
 
     fn cipher_function_des() -> {}
@@ -173,5 +182,54 @@ impl DataEncryptionStandardAlg {
 */
 }
 
+fn initial_permutation(block: [[u8; 8]; 8]) -> [[u8; 8]; 8] {
+    let concat_block: Vec<u8> = block.concat();
+    let permuted_block: Vec<u8> = INITIAL_PERMUTATION_TABLE
+            .concat()
+            .iter()
+            .map(|pos:&u8 | 
+                {
+                    concat_block[pos.clone() as usize - 1]
+                })
+            .collect();
+
+    return make_64bits_blocks(permuted_block)[0];
+}
+
+fn final_permutation(block: [[u8; 8]; 8]) -> [[u8; 8]; 8] {
+    let concat_block: Vec<u8> = block.concat();
+    let unpermuted_block: Vec<u8> = FINAL_PERMUTATION_TABLE
+            .concat()
+            .iter()
+            .map(|pos:&u8 | 
+                {
+                    concat_block[pos.clone() as usize - 1]
+                })
+            .collect();
+
+    return make_64bits_blocks(unpermuted_block)[0];
+}
 
 
+#[cfg(test)]
+mod data_encryption_standard_test {
+    use super::*;
+
+    #[test]
+    fn test_initial_permutation() -> () {
+        assert_eq!(initial_permutation([[0; 8];8]), [[0; 8];8]);
+        assert_eq!(initial_permutation([[1; 8];8]), [[1; 8];8]);
+
+        let vec_test = make_64bits_blocks((1..=64).collect())[0];
+        assert_eq!(initial_permutation(vec_test), INITIAL_PERMUTATION_TABLE);
+    }
+    
+    #[test]
+    fn test_final_permutation() -> () {
+        assert_eq!(final_permutation([[0; 8];8]), [[0; 8];8]);
+        assert_eq!(final_permutation([[1; 8];8]), [[1; 8];8]);
+
+        let vec_test = make_64bits_blocks((1..=64).collect())[0];
+        assert_eq!(final_permutation(vec_test), FINAL_PERMUTATION_TABLE);
+    }
+}

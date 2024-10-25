@@ -7,6 +7,9 @@ fn bits_to_byte(bits: &[u8; 8]) -> u8 {
     return byte;
 }
 
+
+
+ 
 fn byte_to_bits(byte: u8) -> [u8; 8] {
     let mut bits: [u8; 8] = [0; 8]; 
 
@@ -15,6 +18,9 @@ fn byte_to_bits(byte: u8) -> [u8; 8] {
     }
     return bits;
 }
+
+
+
 
 pub fn char_to_bits(c: char) -> Vec<[u8; 8]> {
     let bits: Vec<[u8; 8]> = 
@@ -27,17 +33,26 @@ pub fn char_to_bits(c: char) -> Vec<[u8; 8]> {
     return bits;
 }
 
+
+
+
 pub fn bits_to_char(bits: Vec<[u8; 8]>) -> char {
     let bytes: Vec<u8> = bits.iter().map(|bits: &[u8; 8]| bits_to_byte(bits)).collect();
     
     return String::from_utf8(bytes).unwrap_or(" ".to_string()).chars().nth(0).unwrap_or(' ');
 }
 
+
+
+
 pub fn string_into_bits(message: String) -> Vec<u8> {
     let vec_chars_bits: Vec<Vec<[u8; 8]>> = message.chars().map(|c: char| char_to_bits(c)).collect();
     
     return vec_chars_bits.concat().concat();
 }
+
+
+
 
 pub fn bits_into_string(bits: Vec<u8>) -> String {
     let bytes: Vec<u8> = bits
@@ -50,6 +65,9 @@ pub fn bits_into_string(bits: Vec<u8>) -> String {
 
     return String::from_utf8(bytes).unwrap_or(" ".to_string());
 }
+
+
+
 
 pub fn is_a_8bit_chunk(chunk: &[u8]) -> [u8; 8] {
     let mut chunk_x: Vec<u8> = chunk.into();
@@ -64,6 +82,9 @@ pub fn is_a_8bit_chunk(chunk: &[u8]) -> [u8; 8] {
     }
     return chunk_x.try_into().unwrap_or(error_chunk);
 }
+
+
+
 
 pub fn is_a_8bytes_block(block: Vec<[u8; 8]>) -> [[u8; 8]; 8] {
     let mut block_x: Vec<[u8; 8]> = block.clone().into();
@@ -80,6 +101,9 @@ pub fn is_a_8bytes_block(block: Vec<[u8; 8]>) -> [[u8; 8]; 8] {
     return block_x.try_into().unwrap_or(error_block);
 }
 
+
+
+
 pub fn make_64bits_blocks(bits: Vec<u8>) -> Vec<[[u8; 8]; 8]> {
     let bytes: Vec<[u8; 8]> = bits
         .chunks(8)
@@ -93,6 +117,9 @@ pub fn make_64bits_blocks(bits: Vec<u8>) -> Vec<[[u8; 8]; 8]> {
 
     return blocks_vec;
 }
+
+
+
 
 #[cfg(test)]
 mod test_ops {
