@@ -1,6 +1,7 @@
-pub mod args;
 pub mod alphabet;
+pub mod args;
 pub mod ops;
+pub mod tables;
 pub mod algorithms {
     pub mod advanced_encryption_standard;
     pub mod cesar_cipher;
