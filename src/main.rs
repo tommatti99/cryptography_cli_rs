@@ -11,7 +11,7 @@ pub mod algorithms {
     pub mod xor_cipher;
 }
 
-use algorithms::{advanced_encryption_standard::AdvancedEncryptionStandardAlg, cesar_cipher::CesarCipherAlg, data_encryption_standard::DataEncryptionStandardAlg, transposition_cipher::TranspositionCipherAlg, vigenere_cipher::VigenereCipherAlg, xor_cipher::XorCipherAlg};
+use algorithms::{advanced_encryption_standard::AdvancedEncryptionStandardAlg, cesar_cipher::CesarCipherAlg, transposition_cipher::TranspositionCipherAlg, vigenere_cipher::VigenereCipherAlg, xor_cipher::XorCipherAlg, data_encryption_standard::DataEncryptionStandardAlg};
 use args::{Algorithms, CriptographyCliArgs};
 use clap::{Parser, ValueEnum};
 

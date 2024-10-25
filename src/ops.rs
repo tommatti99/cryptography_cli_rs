@@ -86,6 +86,38 @@ pub fn is_a_8bit_chunk(chunk: &[u8]) -> [u8; 8] {
 
 
 
+pub fn is_a_7bit_chunk(chunk: &[u8]) -> [u8; 7] {
+    let mut chunk_x: Vec<u8> = chunk.into();
+    let error_chunk: [u8; 7] = [0; 7];
+
+    if chunk.len() > 7 {
+        return error_chunk;
+    }
+
+    while chunk_x.len() < 7 {
+        chunk_x.push(0);
+    }
+    return chunk_x.try_into().unwrap_or(error_chunk);
+}
+
+pub fn is_a_xbit_chunk(chunk: &[u8], x_bits_must_have: usize) -> Vec<u8> {
+    let mut chunk_x: Vec<u8> = chunk.into();
+    let error_chunk: Vec<u8> = {(0..x_bits_must_have).push(0)}
+
+    if chunk.len() > 7 {
+        return error_chunk;
+    }
+
+    while chunk_x.len() < 7 {
+        chunk_x.push(0);
+    }
+    return chunk_x.try_into().unwrap_or(error_chunk);
+}
+
+
+
+
+
 pub fn is_a_8bytes_block(block: Vec<[u8; 8]>) -> [[u8; 8]; 8] {
     let mut block_x: Vec<[u8; 8]> = block.clone().into();
     let fill_block: [u8; 8] = [0; 8]; 
@@ -121,8 +153,52 @@ pub fn make_64bits_blocks(bits: Vec<u8>) -> Vec<[[u8; 8]; 8]> {
 
 
 
+pub fn byte_parity_verify(byte: [u8; 8]) -> [u8; 8] {
+    if byte.iter()
+           .map(|x: &u8| { if *x == 1 {1} else {0} })
+           .sum::<u32>() % 2 == 0 {
+
+        if byte[7] == 0 {
+            return [byte[0], byte[1], byte[2], byte[3], byte[4], byte[5], byte[6], 1];
+        }
+        return [byte[0], byte[1], byte[2], byte[3], byte[4], byte[5], byte[6], 0];
+    }
+    return byte;
+}
+
+
+
+
+pub fn permutation(block: Vec<u8>, concatenated_permut_table: Vec<u8>) -> Vec<u8> {
+    return concatenated_permut_table
+            .iter()
+            .map(|pos:&u8 | 
+                {
+                    block[pos.clone() as usize - 1]
+                })
+            .collect::<Vec<u8>>();
+} 
+
+
+
+
+pub fn left_shift_vec(bits_vec: Vec<u8>, shift: usize) -> Vec<u8> {
+    let mut shift_vec = bits_vec.clone();
+
+    for _ in 0..shift {
+        shift_vec.remove(0);
+        shift_vec.push(0);
+    }
+
+    return shift_vec;
+}
+
+
+
 #[cfg(test)]
 mod test_ops {
+    use crate::tables::{DES_FINAL_PERMUTATION_TABLE, DES_INITIAL_PERMUTATION_TABLE};
+
     use super::*;
     
     #[test]
@@ -180,6 +256,13 @@ mod test_ops {
         assert_eq!(is_a_8bit_chunk(&[1,0,1]), [1,0,1,0,0,0,0,0]);
         assert_eq!(is_a_8bit_chunk(&[1,0,1,0,0,1]), [1,0,1,0,0,1,0,0]);
         assert_eq!(is_a_8bit_chunk(&[1,0,1,0,0,1,0,0,0]), [0,0,0,0,0,0,0,0]);
+    }
+
+    #[test]
+    fn test_is_a_7bit_chunk() -> () {
+        assert_eq!(is_a_7bit_chunk(&[1,0,1]), [1,0,1,0,0,0,0]);
+        assert_eq!(is_a_7bit_chunk(&[1,0,1,0,0,1]), [1,0,1,0,0,1,0]);
+        assert_eq!(is_a_7bit_chunk(&[1,0,1,0,0,1,0,0,0]), [0,0,0,0,0,0,0]);
     }
     
     #[test]
@@ -292,5 +375,38 @@ mod test_ops {
                                           [0, 0, 0, 0, 0, 0, 0, 0], 
                                           [0, 0, 0, 0, 0, 0, 0, 0]]
         ]);
+    }
+
+    #[test]
+    fn test_byte_parity_verify() -> () {
+        assert_eq!(byte_parity_verify([0,0,0,0,0,0,0,0]), [0,0,0,0,0,0,0,1]);
+        assert_eq!(byte_parity_verify([1,1,1,1,1,1,1,1]), [1,1,1,1,1,1,1,0]);
+        assert_eq!(byte_parity_verify([1,1,1,1,0,0,0,0]), [1,1,1,1,0,0,0,1]);
+        assert_eq!(byte_parity_verify([1,1,1,0,0,0,0,0]), [1,1,1,0,0,0,0,0]);
+        assert_eq!(byte_parity_verify([1,1,1,0,0,1,1,0]), [1,1,1,1,0,1,1,0]);
+        assert_eq!(byte_parity_verify([1,1,1,1,1,1,1,0]), [1,1,1,1,1,1,1,0]);
+    }
+
+    #[test]
+    fn test_permutation() -> () {
+        assert_eq!(permutation([[0; 8];8].concat(), DES_INITIAL_PERMUTATION_TABLE.concat()), [[0; 8];8].concat());
+        assert_eq!(permutation([[1; 8];8].concat(), DES_INITIAL_PERMUTATION_TABLE.concat()), [[1; 8];8].concat());
+        let vec_test = make_64bits_blocks((1..=64).collect())[0];
+        assert_eq!(permutation(vec_test.concat(), DES_INITIAL_PERMUTATION_TABLE.concat()), DES_INITIAL_PERMUTATION_TABLE.concat());
+        assert_eq!(permutation([[0; 8];8].concat(), DES_FINAL_PERMUTATION_TABLE.concat()), [[0; 8];8].concat());
+        assert_eq!(permutation([[1; 8];8].concat(), DES_FINAL_PERMUTATION_TABLE.concat()), [[1; 8];8].concat());
+
+        let vec_test = make_64bits_blocks((1..=64).collect())[0];
+        assert_eq!(permutation(vec_test.concat(), DES_FINAL_PERMUTATION_TABLE.concat()), DES_FINAL_PERMUTATION_TABLE.concat());
+    }
+
+    #[test]
+    fn test_left_shift() -> () {
+        assert_eq!(left_shift_vec(vec![0, 0, 0, 0, 0, 1, 1, 0], 1), vec![0, 0, 0, 0, 1, 1, 0, 0]);
+        assert_eq!(left_shift_vec(vec![1, 0, 1, 0, 1, 0], 10), vec![0, 0, 0, 0, 0, 0]);
+        assert_eq!(left_shift_vec(vec![1, 0, 1, 0, 1, 0], 5), vec![0, 0, 0, 0, 0, 0]);
+        assert_eq!(left_shift_vec(vec![1, 0, 1, 0, 1, 0], 2), vec![1, 0, 1, 0, 0, 0]);
+        assert_eq!(left_shift_vec(vec![1, 0, 1, 0, 1, 0], 1), vec![0, 1, 0, 1, 0, 0]);
+        assert_eq!(left_shift_vec(vec![1, 0, 1, 0, 1, 0], 0), vec![1, 0, 1, 0, 1, 0]); 
     }
 }
